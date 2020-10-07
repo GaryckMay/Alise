@@ -1,11 +1,13 @@
 # -*- coding: utf8 -*-
 import json
 import requests
+import os
+os.environ["PYTHONIOENCODING"]="UTF8"
 
 # запись лога в файл
 def write(content):
     f = open('text.txt', 'a')
-    f.write(content + '\n')
+    f.write(content)
     f.close()
 
 # https://yandex.ru/dev/dialogs/alice/doc/protocol.html/
@@ -42,31 +44,32 @@ def answer(request):
     if request!='':
         j = json.loads(request)
         command = j['request']['command']
-        if command == 'бит'.decode('utf8'):
-            data={"text":"суупер биит".decode('utf8'),"tts":'с+упер б+ит'.decode('utf8')}
+        if command == 'бит':
+            data={"text":"суупер биит","tts":'с+упер б+ит'}
             content=genResp(data)
         # запрос температуры
-        if command == 'температура на улице'.decode('utf8'):
+        elif command in ['температура на улице','температура за окном','алиса температура на улице','алиса температура за окном']:
             temp=getSensor(7466)
             if temp!='':
                 say="температура за окном: "+str(temp)+' градусов'
-                say=say.decode('utf8')
+                say=say
                 data={"text":say,"tts":say}
             else:
-                data={"text":"а я не знаю".decode('utf8'),"tts":'а я не знаю'.decode('utf8')}
+                data={"text":"а я не знаю","tts":'а я не знаю'}
             content=genResp(data)
         # запрос давления
-        if command == 'давление на улице'.decode('utf8'):
+        elif command in ['давление на улице','давление за окном','алиса давление на улице','алиса давление за окном']:
             pressure=getSensor(955)
             if pressure!='':
-                say="атмосферное давлен: "+str(pressure)+' миллиметров ртутного столба'
-                say=say.decode('utf8')
+                say="атмосферное давление: "+str(pressure)+' миллиметров ртутного столба'
+                say=say
                 data={"text":say,"tts":say}
             else:
-                data={"text":"а я не знаю".decode('utf8'),"tts":'а я не знаю'.decode('utf8')}
+                data={"text":"а я не знаю","tts":'а я не знаю'}
             content=genResp(data)
         else:
             data={"text":command,"tts":command}
             content=genResp(data)
-    write(content.encode('utf8'))
+    write(content)
     return content
+
